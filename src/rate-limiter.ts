@@ -89,6 +89,15 @@ export class RateLimiter {
   getName(): string {
     return this.name;
   }
+
+  /**
+   * Reset the bucket to full capacity and reset the refill clock.
+   * Useful in tests to restore a known state between cases.
+   */
+  reset(): void {
+    this.tokens = this.maxTokens;
+    this.lastRefill = Date.now();
+  }
 }
 
 // Pre-configured limiters for GitHub and Notion APIs
