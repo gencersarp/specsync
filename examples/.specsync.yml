@@ -1,0 +1,21 @@
+rules:
+  - match:
+      path_glob: "services/payments/**"
+      file_types: ["openapi", "graphql", "yaml"]
+    doc:
+      notion_page_id: "example-page-id"
+      section_hint: "API: Payments Service"
+
+  - match:
+      path_glob: "services/auth/**"
+      file_types: ["openapi", "json"]
+    doc:
+      notion_page_id: "auth-spec-page-id"
+      section_hint: "Authentication API"
+
+  - match:
+      path_glob: "config/**"
+      file_types: ["yaml", "json", "config"]
+    doc:
+      notion_page_id: "infra-config-page-id"
+      section_hint: "Infrastructure Configuration"
