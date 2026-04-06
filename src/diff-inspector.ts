@@ -829,6 +829,21 @@ export function formatChangeSummary(summary: ChangeSummary): string {
   return lines.join("\n");
 }
 
+/**
+ * Returns true when a ChangeSummary contains at least one detected change
+ * worth syncing to a Notion spec page.
+ *
+ * Use this as a fast pre-filter before calling the LLM or the Notion API
+ * so that no-op PRs (e.g. doc-only diffs) don't waste quota.
+ */
+export function hasMeaningfulChanges(summary: ChangeSummary): boolean {
+  return (
+    summary.endpoints.length > 0 ||
+    summary.graphqlChanges.length > 0 ||
+    summary.configChanges.length > 0
+  );
+}
+
 // Export internal functions for testing
 export {
   parseGraphQLDefinitions,
