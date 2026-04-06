@@ -150,6 +150,20 @@ export function parseConfigFromFile(filePath: string): SpecSyncConfig {
   return parseConfigFromString(content);
 }
 
+/**
+ * Return all rules whose path_glob matches the given filename.
+ * Useful as a cheap pre-filter before running the full diff inspector.
+ */
+export function findRulesForFile(
+  config: SpecSyncConfig,
+  filename: string
+): SyncRule[] {
+  const { minimatch } = require("minimatch") as typeof import("minimatch");
+  return config.rules.filter((rule) =>
+    minimatch(filename, rule.match.path_glob, { matchBase: true })
+  );
+}
+
 export function parseConfigFromRepo(
   repoRoot: string
 ): SpecSyncConfig | null {
