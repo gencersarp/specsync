@@ -130,8 +130,9 @@ async function callOpenAICompatible(
               "anthropic-version": anthropicVersion,
             },
             body: JSON.stringify({
-              model: config.model ?? "claude-sonnet-4-20250514",
+              model: config.model ?? "claude-sonnet-4-6",
               max_tokens: 4096,
+              temperature: 0.2,
               system: systemPrompt,
               messages: [{ role: "user", content: userPrompt }],
             }),
