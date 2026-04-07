@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as yaml from "js-yaml";
+import { minimatch } from "minimatch";
 
 export interface MatchRule {
   path_glob: string;
@@ -158,10 +159,29 @@ export function findRulesForFile(
   config: SpecSyncConfig,
   filename: string
 ): SyncRule[] {
-  const { minimatch } = require("minimatch") as typeof import("minimatch");
   return config.rules.filter((rule) =>
     minimatch(filename, rule.match.path_glob, { matchBase: true })
   );
+}
+
+/**
+ * Return the unique set of Notion doc targets referenced by the given rules.
+ *
+ * When multiple rules point at the same page + section (e.g. two glob
+ * patterns both covering the same OpenAPI file), deduplication prevents
+ * fetching and patching the same Notion page twice in a single sync run.
+ */
+export function getDedupedDocTargets(rules: SyncRule[]): DocTarget[] {
+  const seen = new Set<string>();
+  const targets: DocTarget[] = [];
+  for (const rule of rules) {
+    const key = `${rule.doc.notion_page_id}::${rule.doc.section_hint}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      targets.push(rule.doc);
+    }
+  }
+  return targets;
 }
 
 export function parseConfigFromRepo(
